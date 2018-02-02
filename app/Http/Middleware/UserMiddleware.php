@@ -16,6 +16,9 @@ class UserMiddleware
     public function handle($request, Closure $next)
     {
         $user = auth()->user();
+        if (!$user) {
+            return $next($request);
+        }
         if ($user->role =='retailer') {
            return redirect()->to('retailer/');
         }

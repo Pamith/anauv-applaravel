@@ -36,9 +36,7 @@ class RetailerController extends Controller
     }
 
     public function AddRetailer(Request $request)
-    {
-      // dd($request->all());
-      
+    {     
 
     	$validator = $this->validator($request->all());
     	if ($validator->fails()) {
@@ -64,6 +62,9 @@ class RetailerController extends Controller
       $location=[];
       for ($i=0; $i < count($request->retailerlocation) ; $i++) { 
         $data['retailer_id'] = $user->id;
+        $data['contact_name']=$request->shop_contact[$i];
+        $data['contact_email']=$request->shop_email[$i];
+        $data['contact_mobile']='+91'.$request->shop_mobile[$i];
         $data['address']=$request->retailerlocation[$i];
         $data['latitude']=$request->lattitude[$i];
         $data['longitude']=$request->longtitude[$i];
@@ -97,15 +98,16 @@ class RetailerController extends Controller
       $offers = OffersModel::where('retailer_id',$user->retailer_id)
                             ->get()
                             ->all();
+     $shops = RetailerProfile::find($retailer_id)->retailer_shops;
       return view('retailers.RetailerDashboard')
                    ->with('offers',$offers)
+                   ->with('shops',$shops)
                    ->with('msg',$msg);
     }
     public function createoffers()
     {
      $user = auth()->user()->retailerprofile;
      $retailer_id = $user->retailer_id;
-     
      $shops = RetailerProfile::find($retailer_id)->retailer_shops;
             $cat = ParentCategory::where('parent_id',0)->get();
             return view('retailers.createOffers')

@@ -57,11 +57,12 @@ class HomeController extends Controller
            }else{
 		           switch ($ids) {
 		           	case 'null':
-		               $offers = DB::select('SELECT * FROM offers_models WHERE category  IN ('.$ids.')  ORDER BY id;');
+                     $offers = DB::select('SELECT * FROM offers_models ORDER BY id;');
+		               
 		               break;
 		           	
 		           	default:
-		           	     $offers = DB::select('SELECT * FROM offers_models ORDER BY id;');
+		           	     $offers = DB::select('SELECT * FROM offers_models WHERE category  IN ('.$ids.')  ORDER BY id;');
 		           	break;
 		           }
 		       }
@@ -73,6 +74,8 @@ class HomeController extends Controller
     public function RequestOffer(Request $request)
     {
       $users;
+      $lat = $_COOKIE["lat"];
+      $lng = $_COOKIE["lng"];
     	switch ($request->request_type) {
     		case 'modal':
 	    		$parents = ParentCategory::all()->where('parent_id',0);
@@ -85,6 +88,9 @@ class HomeController extends Controller
     		      $ids = explode(',',$request->offer_ids);
     		     $users = User::whereHas('retailer_types',function($q) use ($ids){     
                   $q->WhereIN('cat_id',$ids);
+             })->whereHas('retailer_shops',function($query) use ($lat,$lng){
+                   $query->whereRaw('( 6371 * acos( cos( radians('.$lat.') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( latitude ) ) ) )  < 50');
+                   
              })->get();
 
             $req_cat = ParentCategory::WhereIN('id',$ids)
@@ -98,6 +104,7 @@ class HomeController extends Controller
       foreach ($users as $user ) {
        $user->notify(new RequestOfferNotification($user,$req_cat));
       }
-      return true;
+      // print_r($users);
+      return "true";
     }
 }

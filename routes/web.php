@@ -91,7 +91,7 @@ Route::post('/addRetailer','retailers\RetailerController@AddRetailer')->name('pr
             return View::make('admin.posts-create');
         });
     });
-    Route::group(array('prefix'=>'shop'),function(){
+    Route::group(array('prefix'=>'shop','middleware'=>'userRole'),function(){
         Route::get('/','shop\HomeController@ShopHome')->name('shop');
         Route::post('/filters','shop\HomeController@filter');
         Route::post('/sendcoupon','shop\CouponController@SendCouponCode');

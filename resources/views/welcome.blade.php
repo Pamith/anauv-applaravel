@@ -94,24 +94,22 @@
                         <a href="{{ url('/') }}"><h2>{{ config('app.name') }}</h2></a>
                 </div>
                 <div class="top-right links">
-                    <a href="{{ route('shop') }}">Shop</a>
-                     <a onclick="$('#locationModal').modal('show');">Change Location</a>
+                    
                     @auth
-                        
+                         @if(Auth::user()->role == 'retailer')
+                                        <a href="{{ route('RetailerDashboard') }}">Dashboard</a>
+                                        <a href="{{ route('UserDashboard') }}">Manage Shops</a>
+                                    @else
+                                        <a href="{{ route('shop') }}">Shop</a>
+                                        <a onclick="$('#locationModal').modal('show');">Change Location</a>
+                                        <a href="{{ route('UserDashboard') }}">My Profile</a>
+                                    @endif
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    @if(Auth::user()->role == 'retailer')
-                                    <li>
-                                        <a href="{{ route('RetailerDashboard') }}">Dashboard</a>
-                                    </li>
-                                    @else
-                                    <li>
-                                        <a href="{{ route('UserDashboard') }}">My Profile</a>
-                                    </li>
-                                    @endif
+                                   
                                    
                                     <li>
                                         <a href="{{ route('logout') }}"
@@ -126,9 +124,11 @@
                                     </li>
                                 </ul>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                        <a href="{{ route('addRetailer') }}">Add Your Business</a>                  
+                    <a href="{{ route('shop') }}">Shop</a>
+                    <a onclick="$('#locationModal').modal('show');">Change Location</a>
+                    <a href="{{ route('login') }}">Login</a>
+                    <a href="{{ route('register') }}">Register</a>
+                    <a href="{{ route('addRetailer') }}">Add Your Business</a>                  
                         
                     @endauth
                 </div>

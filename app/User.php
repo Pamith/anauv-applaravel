@@ -37,4 +37,8 @@ class User extends Authenticatable
     {
       return $this->hasMany('App\RetailerType','retailer_id');
     }
+    public function retailer_shops()
+    {
+      return $this->hasMany('App\Retailer_Shop','retailer_id');
+    }
 }

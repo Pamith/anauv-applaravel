@@ -1,3 +1,10 @@
+function confirmLoc(count){
+  $("#lattitude_"+count.attr('data-count')).val(count.attr('data-lat'));
+  $("#longtitude_"+count.attr('data-count')).val(count.attr('data-lng'));
+  $("textarea#loc_"+count.attr('data-count')).val(count.attr('data-addr'));
+  $("#locResults_"+count.attr('data-count')).html('');
+  event.preventDefault();
+};
 $(document).ready(function(){
 
 $('#useLocation').click(function(e){
@@ -22,47 +29,20 @@ function showLocation(position){
         data:'latitude='+latitude+'&longitude='+longitude,
         success:function(msg){
             if(msg.status =='OK'){
-               $(".retailerlocation").val(msg.location);
-               $("#lattitude").val(latitude);
-               $("#longtitude").val(longitude);
+               $("#loc_0").val(msg.location);
+               $("#lattitude_0").val(latitude);
+               $("#longtitude_0").val(longitude);
             }else{
-                 $(".retailerlocation").val('')
-                 $("#latitude").val('');
-               $("#longitude").val('');
+                 $("#loc_0").val('')
+                 $("#lattitude_0").val('');
+               $("#longtitude_0").val('');
                 alert(msg.location);
             }
         }
     });
 }
 
-$(document).on('change','.retailerlocation',function(){
-   var address = $(this);
-   showAddress(address);
-});
-function showAddress(address){
-    
-    $.ajax({
-        headers: {
-                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-        type:'POST',
-        url:'http://localhost/demoapp/public/getlatlong',
-        data:'address='+address.val(),
-        success:function(msg){
-            msg = JSON.parse(msg);
-            if(msg.status =='OK'){
-                console.log(msg);
-               address.val(msg.results[0].formatted_address);
-               $("#lattitude"+address.attr('id')).val(msg.results[0].geometry.location.lat);
-               $("#longtitude"+address.attr('id')).val(msg.results[0].geometry.location.lng);
-            }else{
-                 // $("#retailerlocation").val('');
-                 $("#latitude").val('');
-               $("#longitude").val('');
-                alert(msg.status);
-            }
-        }
-    });
-}
+
+
 })
 
